@@ -1,5 +1,5 @@
 export {};
-const { I, loginSteps } = inject();
+const { loginSteps } = inject();
 Feature('Product List');
 
 Before(({ I }) => {
@@ -65,7 +65,7 @@ Scenario('View Product Detail via inventory title', async ({ I }) => {
     I.seeInCurrentUrl('/inventory-item');
   });
 
-Scenario('View Product Detail via inventory title', async ({ I }) => {
+Scenario('View Product Detail via inventory image', async ({ I }) => {
     I.click('.inventory_item_img')
     I.seeInCurrentUrl('/inventory-item');
   });

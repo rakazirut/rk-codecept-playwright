@@ -1,5 +1,5 @@
 export {};
-const { I, loginSteps } = inject();
+const { loginSteps } = inject();
 
 Feature('Login');
 
