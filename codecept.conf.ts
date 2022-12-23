@@ -28,6 +28,7 @@ export const config: CodeceptJS.MainConfig = {
   },
   include: {
     loginSteps: "./helpers/login.ts",
+    checkoutSteps: "./helpers/checkout.ts",
   },
   name: "codecept-playwright",
 };

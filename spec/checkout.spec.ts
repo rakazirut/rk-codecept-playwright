@@ -1,59 +1,79 @@
 export {};
-const { loginSteps } = inject();
-Feature('Checkout');
+const { loginSteps, checkoutSteps } = inject();
+Feature("Checkout");
 
-Before(({ I }) => {
-    loginSteps.login('standard_user', 'secret_sauce');
-    I.seeInCurrentUrl('/inventory');
-  });
+const firstName:string = "Robert"
+const lastName:string = "Kazirut"
+const zipCode:string = "54321"
 
-Scenario("Add item to the cart", async ({ I }) => {
-    I.click("$add-to-cart-sauce-labs-backpack");
-    I.see('1', '.shopping_cart_badge')
+Before(async ({ I }) => {
+  loginSteps.login("standard_user", "secret_sauce");
+  I.seeInCurrentUrl("/inventory");
+  await I.executeScript(() => {
+    localStorage.setItem("cart-contents", "[4]");
   });
+});
 
-Scenario("View item in the cart", async ({ I }) => {
-    let item = await I.grabTextFrom('.inventory_item_name')
-    I.click("$add-to-cart-sauce-labs-backpack");
-    I.see('1', '.shopping_cart_badge')
-    I.click('.shopping_cart_container')
-    I.seeInCurrentUrl('/cart');
-    I.see(item, '.cart_item')
-  });
+Scenario("Click Continue without providing any information", async ({ I }) => {
+  I.amOnPage("/checkout-step-one.html");
+  checkoutSteps.checkoutStepOne(null, null, null);
+  I.see("Error: First Name is required", "$error");
+});
 
-Scenario("Remove item from cart from product list", async ({ I }) => {
-    I.click("$add-to-cart-sauce-labs-backpack");
-    I.see('1', '.shopping_cart_badge')
-    I.click('$remove-sauce-labs-backpack')
-    I.dontSeeElement('.shopping_cart_badge')
-  });
+Scenario("Click Continue without providing first name", async ({ I }) => {
+  I.amOnPage("/checkout-step-one.html");
+  checkoutSteps.checkoutStepOne(null, lastName, zipCode);
+  I.see("Error: First Name is required", "$error");
+});
 
-Scenario("Remove item from cart from cart", async ({ I }) => {
-    let item = await I.grabTextFrom('.inventory_item_name')
-    I.click("$add-to-cart-sauce-labs-backpack");
-    I.see('1', '.shopping_cart_badge')
-    I.click('.shopping_cart_container')
-    I.seeInCurrentUrl('/cart');
-    I.see(item, '.cart_item')
-    I.click('$remove-sauce-labs-backpack')
-    I.dontSeeElement('.cart_item')
-    I.dontSeeElement('.shopping_cart_badge')
-  });
+Scenario("Click Continue without providing last name", async ({ I }) => {
+  I.amOnPage("/checkout-step-one.html");
+  checkoutSteps.checkoutStepOne(firstName, null, zipCode);
+  I.see("Error: Last Name is required", "$error");
+});
 
-Scenario("View product details from cart", async ({ I }) => {
-    I.click("$add-to-cart-sauce-labs-backpack");
-    I.see('1', '.shopping_cart_badge')
-    I.click('.shopping_cart_container')
-    I.seeInCurrentUrl('/cart');
-    I.click('.inventory_item_name')
-    I.seeInCurrentUrl('/inventory-item');
-  });
+Scenario("Click Continue without providing zip code", async ({ I }) => {
+  I.amOnPage("/checkout-step-one.html");
+  checkoutSteps.checkoutStepOne(firstName, lastName, null);
+  I.see("Error: Postal Code is required", "$error");
+});
 
-Scenario("Click checkout button", async ({ I }) => {
-    I.click("$add-to-cart-sauce-labs-backpack");
-    I.see('1', '.shopping_cart_badge')
-    I.click('.shopping_cart_container')
-    I.seeInCurrentUrl('/cart');
-    I.click('$checkout')
-    I.seeInCurrentUrl('/checkout-step-one');
-  });
+Scenario("Click Continue after providing required information", async ({ I }) => {
+  I.amOnPage("/checkout-step-one.html");
+  checkoutSteps.checkoutStepOne(firstName, lastName, zipCode);
+  I.seeInCurrentUrl("/checkout-step-two");
+});
+
+Scenario("View product details from checkout step two", async ({ I }) => {
+  I.amOnPage("/checkout-step-one.html");
+  checkoutSteps.checkoutStepOne(firstName, lastName, zipCode);
+  I.seeInCurrentUrl("/checkout-step-two");
+  I.click(".inventory_item_name");
+  I.seeInCurrentUrl("/inventory-item");
+});
+
+Scenario("Click cancel button from checkout step two", async ({ I }) => {
+  I.amOnPage("/checkout-step-one.html");
+  checkoutSteps.checkoutStepOne(firstName, lastName, zipCode);
+  I.seeInCurrentUrl("/checkout-step-two");
+  I.click("$cancel");
+  I.seeInCurrentUrl("/inventory");
+});
+
+Scenario("Click finish button from checkout step two", async ({ I }) => {
+  I.amOnPage("/checkout-step-one.html");
+  checkoutSteps.checkoutStepOne(firstName, lastName, zipCode);
+  I.seeInCurrentUrl("/checkout-step-two");
+  I.click("$finish");
+  I.seeInCurrentUrl("/checkout-complete");
+});
+
+Scenario("Click Back Home button from checkout complete", async ({ I }) => {
+  I.amOnPage("/checkout-step-one.html");
+  checkoutSteps.checkoutStepOne(firstName, lastName, zipCode);
+  I.seeInCurrentUrl("/checkout-step-two");
+  I.click("$finish");
+  I.seeInCurrentUrl("/checkout-complete");
+  I.click("$back-to-products");
+  I.seeInCurrentUrl("/inventory");
+});

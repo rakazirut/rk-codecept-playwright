@@ -12,11 +12,11 @@ const { I } = inject();
  *     login('username', 'password')
  */
 function login(user: string, pass: string): void {
-    I.amOnPage('/')
-    I.waitForElement('#user-name')
-    I.fillField('$username', user)
-    I.fillField('$password', pass)
-    I.click('$login-button')
+  I.amOnPage("/");
+  I.waitForElement("#user-name");
+  I.fillField("$username", user);
+  I.fillField("$password", pass);
+  I.click("$login-button");
 }
 
 export = { login };
