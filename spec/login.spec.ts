@@ -3,9 +3,22 @@ const { loginSteps } = inject();
 
 Feature("Login");
 
-Scenario("Successfully login with standard user", async ({ I }) => {
-  loginSteps.login("standard_user", "secret_sauce");
-  I.seeInCurrentUrl("/inventory");
+Scenario(
+  "Login attempt without providing username or password",
+  async ({ I }) => {
+    loginSteps.login(null, null);
+    I.see("Epic sadface: Username is required", "$error");
+  }
+);
+
+Scenario("Login attempt without providing username", async ({ I }) => {
+  loginSteps.login(null, "secret_sauce");
+  I.see("Epic sadface: Username is required", "$error");
+});
+
+Scenario("Login attempt without providing password", async ({ I }) => {
+  loginSteps.login("standard_user", null);
+  I.see("Epic sadface: Password is required", "$error");
 });
 
 Scenario("Unsuccessful login due to invalid password", async ({ I }) => {
@@ -27,6 +40,11 @@ Scenario("Unsuccessful login with invalid user", async ({ I }) => {
     "Epic sadface: Username and password do not match any user in this service",
     "$error"
   );
+});
+
+Scenario("Successfully login with standard user", async ({ I }) => {
+  loginSteps.login("standard_user", "secret_sauce");
+  I.seeInCurrentUrl("/inventory");
 });
 
 Scenario("Successfully login and logout with standard user", async ({ I }) => {

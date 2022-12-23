@@ -14,15 +14,9 @@ const { I } = inject();
  */
 function checkoutStepOne(first: string, last: string, zip: string): void {
   I.waitForElement("$firstName");
-  if (first != null) {
-    I.fillField("$firstName", first);
-  }
-  if (last != null) {
-    I.fillField("$lastName", last);
-  }
-  if (zip != null) {
-    I.fillField("$postalCode", zip);
-  }
+  if (first != null) I.fillField("$firstName", first);
+  if (last != null) I.fillField("$lastName", last);
+  if (zip != null) I.fillField("$postalCode", zip);
   I.click("$continue");
 }
 

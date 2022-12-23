@@ -14,8 +14,8 @@ const { I } = inject();
 function login(user: string, pass: string): void {
   I.amOnPage("/");
   I.waitForElement("#user-name");
-  I.fillField("$username", user);
-  I.fillField("$password", pass);
+  if (user != null) I.fillField("$username", user);
+  if (pass != null) I.fillField("$password", pass);
   I.click("$login-button");
 }
 
