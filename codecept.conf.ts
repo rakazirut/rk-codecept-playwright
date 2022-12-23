@@ -13,7 +13,7 @@ export const config: CodeceptJS.MainConfig = {
   helpers: {
     Playwright: {
       url: "https://www.saucedemo.com",
-      show: true,
+      show: false,
       browser: "chromium",
     },
     ChaiWrapper: {
