@@ -28,3 +28,11 @@ Scenario("Unsuccessful login with invalid user", async ({ I }) => {
     "$error"
   );
 });
+
+Scenario("Successfully login and logout with standard user", async ({ I }) => {
+  loginSteps.login("standard_user", "secret_sauce");
+  I.seeInCurrentUrl("/inventory");
+  I.click(".bm-burger-button");
+  I.click("#logout_sidebar_link");
+  I.seeInCurrentUrl("/");
+});
